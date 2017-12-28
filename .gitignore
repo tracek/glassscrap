@@ -101,4 +101,5 @@ ENV/
 .mypy_cache/
 
 # Project files
+.idea/
 account.txt
