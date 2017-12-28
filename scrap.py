@@ -15,7 +15,6 @@ Credentials = namedtuple('Credentials', ['username', 'password'])
 
 def init_driver(driver_path):
     driver = webdriver.Chrome(driver_path)
-    driver.wait = WebDriverWait(driver, 10)
     return driver
 
 
@@ -29,8 +28,7 @@ def get_credentials(path):
 def login(driver, credentials):
     driver.get("http://www.glassdoor.com/profile/login_input.htm")
     try:
-        user_field = driver.wait.until(EC.presence_of_element_located(
-            (By.NAME, "username")))
+        user_field = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, "username")))
         pw_field = driver.find_element_by_class_name("signin-password")
         login_button = driver.find_element_by_id("signInBtn")
         user_field.send_keys(credentials.username)
@@ -45,9 +43,9 @@ def login(driver, credentials):
 
 def get_total_pages(driver, url):
     driver.get(url)
-    html = driver.page_source
-    soup = BeautifulSoup(html, "html.parser")
-    total_rev_str = soup.find('a', {'class': 'eiCell cell reviews active'}).find('span', {'class': 'num h2'}).text
+    total_rev_present = EC.presence_of_element_located((By.CSS_SELECTOR, '.eiCell.cell.reviews.active'))
+    total_rev_element = WebDriverWait(driver, 10).until(total_rev_present)
+    total_rev_str = total_rev_element.find_element_by_css_selector('.num.h2').text
     total_rev = int(total_rev_str)
     total_pages = total_rev // reviews_per_page
     return total_pages
@@ -73,17 +71,17 @@ if __name__ == '__main__':
 
     total_pages = get_total_pages(driver=driver, url=companyURL)
 
-    d = []
-
-    for page_no in range(1, total_pages):
-        print('Processing page: {}'.format(page_no))
-        currentURL = '{}_P{}.htm'.format(companyURL[:companyURL.rfind('.')], page_no)
-        driver.get(currentURL)
-        some_int = randint(5, 10)
-        driver.execute_script("window.scrollTo(0, {})".format(100 * some_int))
-        time.sleep(some_int)
-        HTML = driver.page_source
-        soup = BeautifulSoup(HTML, "html.parser")
-        reviews = soup.find_all("li", {"class": ["empReview", "padVert"]})
-        dates = parse_reviews_HTML(reviews)
-        d.extend(dates)
+    # d = []
+    #
+    # for page_no in range(1, total_pages):
+    #     print('Processing page: {}'.format(page_no))
+    #     currentURL = '{}_P{}.htm'.format(companyURL[:companyURL.rfind('.')], page_no)
+    #     driver.get(currentURL)
+    #     some_int = randint(5, 10)
+    #     driver.execute_script("window.scrollTo(0, {})".format(100 * some_int))
+    #     time.sleep(some_int)
+    #     HTML = driver.page_source
+    #     soup = BeautifulSoup(HTML, "html.parser")
+    #     reviews = soup.find_all("li", {"class": ["empReview", "padVert"]})
+    #     dates = parse_reviews_HTML(reviews)
+    #     d.extend(dates)
