@@ -102,4 +102,5 @@ ENV/
 
 # Project files
 .idea/
+www/
 account.txt
