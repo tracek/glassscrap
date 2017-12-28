@@ -26,10 +26,13 @@ def get_credentials(path):
 
 class WebCrawler(object):
 
-    def __init__(self):
+    def __init__(self, path):
         self.driver = webdriver.Chrome("/usr/local/bin/chromedriver")
-        self.login()
         self.pages_visited = 0
+        self.path = path
+        self.login()
+        self.driver.get(self.path)
+        self.total_pages = self.get_total_pages()
 
     def login(self):
         self.driver.get("http://www.glassdoor.com/profile/login_input.htm")
@@ -47,54 +50,57 @@ class WebCrawler(object):
         except TimeoutException:
             print("TimeoutException! Username/password field or login button not found on glassdoor.com")
 
-    def get_total_pages(self, url):
+    def get_total_pages(self):
         reviews_per_page = 10
-        self.driver.get(url)
         total_rev_present = EC.presence_of_element_located((By.CSS_SELECTOR, '.eiCell.cell.reviews.active'))
         total_rev_element = WebDriverWait(self.driver, 10).until(total_rev_present)
         total_rev_str = total_rev_element.find_element_by_css_selector('.num.h2').text
         total_rev = int(total_rev_str)
-        total_pages = total_rev // reviews_per_page
+        total_pages = total_rev // reviews_per_page - 1
         return total_pages
 
-    def __next__(self):
-        xpath = '//*[@id="FooterPageNav"]/div/ul/li[7]/a'
-        try:
+    def get_page(self):
+        yield self.driver.page_source
+        self.pages_visited += 1
+
+        while self.pages_visited < self.total_pages:
+            xpath = '//*[@id="FooterPageNav"]/div/ul/li[7]/a'
             element = self.driver.find_element_by_xpath(xpath)
             next_page_address = element.get_property('href')
             self.driver.get(next_page_address)
-            self.pages_visited += 1
-
             some_int = randint(5, 10)
             self.driver.execute_script("window.scrollTo(0, {})".format(100 * some_int))
             time.sleep(some_int)
-            html = self.driver.page_source
-            yield html
+            self.pages_visited += 1
+            yield self.driver.page_source
 
-        except NoSuchElementException as ex:
-            if self.pages_visited > 0:
+    def __next__(self):
+        xpath = '//*[@id="FooterPageNav"]/div/ul/li[7]/a'
+        if self.pages_visited > 0:
+            try:
+                element = self.driver.find_element_by_xpath(xpath)
+            except NoSuchElementException:
                 raise StopIteration
-            else:
-                raise WebParsingException('Unable to find the NEXT button at all', ex)
+
+            next_page_address = element.get_property('href')
+        else:
+            next_page_address = self.path
+
+        self.driver.get(next_page_address)
+        some_int = randint(5, 10)
+        self.driver.execute_script("window.scrollTo(0, {})".format(100 * some_int))
+        time.sleep(some_int)
+        html = self.driver.page_source
+        self.pages_visited += 1
+        return html
+
+    def open(self, url):
+        html = self.driver.get(url)
+        return html
 
     def __iter__(self):
         return self
 
 
-    def get_next_page(self):
-        xpath = '//*[@id="FooterPageNav"]/div/ul/li[7]/a'
-        try:
-            element = self.driver.find_element_by_xpath(xpath)
-            next_page_address = element.get_property('href')
-            self.driver.get(next_page_address)
-            self.pages_visited += 1
-            time.sleep(1)
-        except NoSuchElementException:
-            if self.pages_visited > 0:
-                return None
-            else:
-                raise WebParsingException('Unable to find the NEXT button at all')
-
-
 if __name__ == '__main__':
-    crawler = WebCrawler()
+    crawler = WebCrawler(path="https://www.glassdoor.com/Reviews/Sandvik-Reviews-E10375.htm")
