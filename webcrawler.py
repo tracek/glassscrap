@@ -7,15 +7,16 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import NoSuchElementException
 
 
 Credentials = namedtuple('Credentials', ['username', 'password'])
+
 
 class WebParsingException(Exception):
     def __init__(self, msg, original_exception):
         super(WebParsingException, self).__init__(msg + (": %s" % original_exception))
         self.original_exception = original_exception
+
 
 def get_credentials(path):
     with open(path, "r") as f:
@@ -73,33 +74,6 @@ class WebCrawler(object):
             time.sleep(some_int)
             self.pages_visited += 1
             yield self.driver.page_source
-
-    def __next__(self):
-        xpath = '//*[@id="FooterPageNav"]/div/ul/li[7]/a'
-        if self.pages_visited > 0:
-            try:
-                element = self.driver.find_element_by_xpath(xpath)
-            except NoSuchElementException:
-                raise StopIteration
-
-            next_page_address = element.get_property('href')
-        else:
-            next_page_address = self.path
-
-        self.driver.get(next_page_address)
-        some_int = randint(5, 10)
-        self.driver.execute_script("window.scrollTo(0, {})".format(100 * some_int))
-        time.sleep(some_int)
-        html = self.driver.page_source
-        self.pages_visited += 1
-        return html
-
-    def open(self, url):
-        html = self.driver.get(url)
-        return html
-
-    def __iter__(self):
-        return self
 
 
 if __name__ == '__main__':

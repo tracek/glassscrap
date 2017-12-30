@@ -16,15 +16,6 @@ class LocalCrawler(object):
             with open(page, 'r') as f:
                yield f.read()
 
-    def __next__(self):
-        pass
-
-    def open(self, url):
-        pass
-
-    def __iter__(self):
-        return self
-
 
 if __name__ == '__main__':
     crawler = LocalCrawler('www')
