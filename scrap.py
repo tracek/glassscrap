@@ -1,11 +1,11 @@
-import urllib
+from urllib import parse
 from bs4 import BeautifulSoup
 from localcrawler import LocalCrawler
 from webcrawler import WebCrawler
 
 
 def get_crawler(uri):
-    if urllib.parse.urlparse(uri).scheme in ('http', 'https',):
+    if parse.urlparse(uri).scheme in ('http', 'https',):
         scraper = WebCrawler(uri)
     else:
         scraper = LocalCrawler(uri)
@@ -28,22 +28,68 @@ def get_ratings(review):
     return ratings
 
 
-def get_title(review):
-    title = review.find('span', {'class': 'authorJobTitle middle reviewer'}).getText()
+def get_jobtitle(review):
+    title = review.find('span', {'class': 'authorJobTitle middle reviewer'})
+    if title:
+        title = title.text
     return title
 
 
 def get_location(review):
-    location = review.find('span', {'class': 'authorLocation middle'}).getText()
+    location = review.find('span', {'class': 'authorLocation middle'})
+    if location:
+        location = location.text
     return location
 
 
 def get_recommendations(review):
+    recommendations = None
     t = review.find('div', {'class': 'flex-grid recommends'})
-    recommendations_html = t.find_all('span', class_='middle')
-    recommendations = {'Recommendation {}'.format(idx+1): rec.getText()
-                        for idx, rec in enumerate(recommendations_html)}
+    if t:
+        recommendations_html = t.find_all('span', class_='middle')
+        if recommendations_html:
+            recommendations = {'Recommendation {}'.format(idx+1): rec.getText()
+                                for idx, rec in enumerate(recommendations_html)}
     return recommendations
+
+
+def get_maintext(review):
+    main_text = review.find('p', {'class': ' tightBot mainText'})
+    if main_text:
+        main_text = main_text.text.replace(u'\xa0', u' ')
+    return main_text
+
+
+def get_pros(review):
+    pros = review.find('p', {'class': ' pros mainText truncateThis wrapToggleStr'})
+    if pros:
+        pros = pros.text
+    return pros
+
+
+def get_cons(review):
+    cons = review.find('p', {'class': ' cons mainText truncateThis wrapToggleStr'})
+    if cons:
+        cons = cons.text
+    return cons
+
+
+def get_advice(review):
+    advice = review.find('p', {'class': 'dviceMgmt mainText truncateThis wrapToggleStr truncatedThis pointer'})
+    if advice:
+        advice = advice.text
+    return advice
+
+def parse_review(review):
+    datetime = get_datetime(review)
+    maintext = get_maintext(review)
+    jobtitle = get_jobtitle(review)
+    location = get_location(review)
+    recommendations = get_recommendations(review)
+    ratings = get_ratings(review)
+    pros = get_pros(review)
+    cons = get_cons(review)
+    advice = get_advice(review)
 
 
 if __name__ == '__main__':
@@ -56,7 +102,15 @@ if __name__ == '__main__':
         soup = BeautifulSoup(page, "html.parser")
         reviews = soup.find_all("li", {"class": ["empReview", "padVert"]})
         for review in reviews:
-            rat = get_ratings(review)
+            datetime = get_datetime(review)
+            maintext = get_maintext(review)
+            jobtitle = get_jobtitle(review)
+            location = get_location(review)
+            recommendations = get_recommendations(review)
+            ratings = get_ratings(review)
+            pros = get_pros(review)
+            cons = get_cons(review)
+            advice = get_advice(review)
 
 
     # HTML = driver.page_source
