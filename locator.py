@@ -67,7 +67,7 @@ def get_geoinfo(location: str) -> dict:
             result['city'] = city
         result['location_raw'] = location
     else:
-        result = None
+        result = {}
     return result
 
 

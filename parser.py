@@ -51,13 +51,14 @@ def _get_location(review):
 
 
 def _get_recommendations(review):
-    recommendations = None
     t = review.find('div', {'class': 'flex-grid recommends'})
     if t:
         recommendations_html = t.find_all('span', class_='middle')
         if recommendations_html:
             recommendations = {'Recommendation_{}'.format(idx+1): rec.getText()
                                 for idx, rec in enumerate(recommendations_html)}
+    else:
+        recommendations = {}
     return recommendations
 
 
