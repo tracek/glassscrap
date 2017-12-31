@@ -17,61 +17,30 @@ def get_crawler(uri):
 
 header = [
     'datetime',
-    'maintext',
     'jobtitle',
-    'location_region',
-    'location_region-code',
-    'location_sub-region',
-    'location_sub-region-code',
-    'location_country',
-    'location_country-code',
-    'location_US_state_code',
-    'location_city',
-    'location_location_raw',
-    'ratings_Senior_Management',
-    'ratings_Work_Life_Balance',
-    'ratings_Culture_and_Values',
-    'ratings_Compensation_and_Benefits',
-    'ratings_Career_Opportunities',
-    'recommendations_Recommendation_1',
-    'recommendations_Recommendation_2',
-    'recommendations_Recommendation_3',
+    'currently_employed',
+    'maintext',
+    'region',
+    'region-code',
+    'sub-region',
+    'sub-region-code',
+    'country',
+    'country-code',
+    'US_state_code',
+    'city',
+    'location_raw',
+    'rating_Senior_Management',
+    'rating_Work_Life_Balance',
+    'rating_Culture_and_Values',
+    'rating_Compensation_and_Benefits',
+    'rating_Career_Opportunities',
+    'Recommendation_1',
+    'Recommendation_2',
+    'Recommendation_3',
     'pros',
     'cons',
     'advice'
 ]
-
-
-def save_as_csv(result, path):
-    global HEADER
-    with open(path, 'at', encoding='utf-8') as fp:
-        d = _flatten_json(result)
-        if not HEADER:
-            HEADER = d.keys()
-            writer = DictWriter(fp, HEADER)
-            writer.writeheader()
-        else:
-            writer = DictWriter(fp, HEADER)
-        writer.writerow(d)
-
-
-def _flatten_json(y):
-    out = {}
-
-    def flatten(x, name=''):
-        if type(x) is dict:
-            for a in x:
-                flatten(x[a], name + a + '_')
-        elif type(x) is list:
-            i = 0
-            for a in x:
-                flatten(a, name + str(i) + '_')
-                i += 1
-        else:
-            out[name[:-1]] = x
-
-    flatten(y)
-    return out
 
 
 if __name__ == '__main__':
@@ -99,9 +68,7 @@ if __name__ == '__main__':
             for review in reviews:
                 print(counter)
                 result = parse_review(review)
-                save_as_json(result, path=output_json)
-                flat = _flatten_json(result)
-                writer.writerow(flat)
+                writer.writerow(result)
                 counter += 1
 
             # save_as_csv(result, path=output_csv)
