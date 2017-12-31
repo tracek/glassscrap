@@ -1,7 +1,13 @@
 from locator import get_geoinfo
+from bs4.element import Tag
 
 
-def parse_review(review):
+def parse_review(review: Tag) -> dict:
+    """
+    Extract user review from HTML
+    :param review: html document (bs4.element.Tag) with user review
+    :return: dictionary with user review info
+    """
     location = _get_location(review)
     d = {'datetime': _get_datetime(review),
          'maintext': _get_maintext(review),

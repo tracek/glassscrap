@@ -33,18 +33,14 @@ class FileWriter(object):
                 p = path + '.' + format
                 if os.path.exists(p):
                     os.remove(p)
-        if self.json_path:
-            self.json_fp = open(self.json_path, 'a')
-        if self.csv_path:
-            self.csv_fp = open(self.csv_path, 'a')
 
     def write(self):
         if self.json_path:
-            self.json_fp.write('test')
-            self.json_fp.close()
+            with open(self.json_path, 'a') as json_fp:
+                pass
         if self.csv_path:
-            self.csv_fp.write('test2')
-            self.csv_fp.close()
+            with open(self.csv_path, 'a') as csv_fp:
+                pass
 
     def __del__(self):
         if self.json_path:
