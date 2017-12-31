@@ -1,8 +1,12 @@
+from locator import get_geoinfo
+
+
 def parse_review(review):
+    location = _get_location(review)
     d = {'datetime': _get_datetime(review),
          'maintext': _get_maintext(review),
          'jobtitle': _get_jobtitle(review),
-         'location': _get_location(review),
+         'location': get_geoinfo(location),
          'recommendations': _get_recommendations(review),
          'ratings': _get_ratings(review),
          'pros': _get_pros(review),
