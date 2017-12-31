@@ -63,18 +63,18 @@ def _get_maintext(review):
 
 def _get_pros(review):
     pros = review.find('p', {'class': ' pros mainText truncateThis wrapToggleStr'})
-    pros = pros.text if pros else None
+    pros = pros.get_text(separator=' | ') if pros else None
     return pros
 
 
 def _get_cons(review):
     cons = review.find('p', {'class': ' cons mainText truncateThis wrapToggleStr'})
-    cons = cons.text if cons else None
+    cons = cons.get_text(separator=' | ') if cons else None
     return cons
 
 
 def _get_advice(review):
     advice = review.find('p', {'class': 'dviceMgmt mainText truncateThis wrapToggleStr truncatedThis pointer'})
-    advice = advice.text if advice else None
+    advice = advice.get_text(separator=' | ') if advice else None
     return advice
 

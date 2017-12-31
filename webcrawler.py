@@ -69,11 +69,19 @@ class WebCrawler(object):
             element = self.driver.find_element_by_xpath(xpath)
             next_page_address = element.get_property('href')
             self.driver.get(next_page_address)
+            self.path = next_page_address
             some_int = randint(5, 10)
             self.driver.execute_script("window.scrollTo(0, {})".format(100 * some_int))
             time.sleep(some_int)
             self.pages_visited += 1
             yield self.driver.page_source
+
+    def dump(self):
+        for page in self.get_page():
+            filename = self.path[self.path.rfind('/') + 1:]
+            with open(filename, 'wt', encoding='utf-8') as fp:
+                fp.write(page)
+
 
 
 if __name__ == '__main__':

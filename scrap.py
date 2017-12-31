@@ -17,14 +17,14 @@ def get_crawler(uri):
 
 
 def save_as_json(results, path):
-    with open(path, 'a') as fp:
-        res_json = json.dumps(results)
+    with open(path, 'at', encoding='utf-8') as fp:
+        res_json = json.dumps(results, ensure_ascii=False)
         fp.write(res_json + '\n')
 
 
 def save_complete_as_json(results, path='results.json'):
     with open(path, 'a') as fp:
-        json.dump(results, fp)
+        json.dump(results, fp, ensure_ascii=False)
 
 
 if __name__ == '__main__':
@@ -40,7 +40,7 @@ if __name__ == '__main__':
     results = []
 
     for page in crawler.get_page():
-        soup = BeautifulSoup(page, "html.parser")
+        soup = BeautifulSoup(page, "lxml")
         reviews = soup.find_all("li", {"class": ["empReview", "padVert"]})
         for review in reviews:
             result = parse_review(review)
