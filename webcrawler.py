@@ -28,37 +28,37 @@ def get_credentials(path):
 class WebCrawler(object):
 
     def __init__(self, path):
+        def get_total_pages(self):
+            reviews_per_page = 10
+            total_rev_present = EC.presence_of_element_located((By.CSS_SELECTOR, '.eiCell.cell.reviews.active'))
+            total_rev_element = WebDriverWait(self.driver, 10).until(total_rev_present)
+            total_rev_str = total_rev_element.find_element_by_css_selector('.num.h2').text
+            total_rev = int(total_rev_str)
+            total_pages = total_rev // reviews_per_page - 1
+            return total_pages
+
+        def login(self):
+            self.driver.get("http://www.glassdoor.com/profile/login_input.htm")
+            credentials = get_credentials("account.txt")
+            try:
+                user_field = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.NAME, "username")))
+                pw_field = self.driver.find_element_by_class_name("signin-password")
+                login_button = self.driver.find_element_by_id("signInBtn")
+                user_field.send_keys(credentials.username)
+                user_field.send_keys(Keys.TAB)
+                time.sleep(1)
+                pw_field.send_keys(credentials.password)
+                time.sleep(1)
+                login_button.click()
+            except TimeoutException:
+                print("TimeoutException! Username/password field or login button not found on glassdoor.com")
+
         self.driver = webdriver.Chrome("/usr/local/bin/chromedriver")
         self.pages_visited = 0
         self.path = path
-        self.login()
+        login()
         self.driver.get(self.path)
-        self.total_pages = self.get_total_pages()
-
-    def login(self):
-        self.driver.get("http://www.glassdoor.com/profile/login_input.htm")
-        credentials = get_credentials("account.txt")
-        try:
-            user_field = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.NAME, "username")))
-            pw_field = self.driver.find_element_by_class_name("signin-password")
-            login_button = self.driver.find_element_by_id("signInBtn")
-            user_field.send_keys(credentials.username)
-            user_field.send_keys(Keys.TAB)
-            time.sleep(1)
-            pw_field.send_keys(credentials.password)
-            time.sleep(1)
-            login_button.click()
-        except TimeoutException:
-            print("TimeoutException! Username/password field or login button not found on glassdoor.com")
-
-    def get_total_pages(self):
-        reviews_per_page = 10
-        total_rev_present = EC.presence_of_element_located((By.CSS_SELECTOR, '.eiCell.cell.reviews.active'))
-        total_rev_element = WebDriverWait(self.driver, 10).until(total_rev_present)
-        total_rev_str = total_rev_element.find_element_by_css_selector('.num.h2').text
-        total_rev = int(total_rev_str)
-        total_pages = total_rev // reviews_per_page - 1
-        return total_pages
+        self.total_pages = get_total_pages()
 
     def get_page(self):
         yield self.driver.page_source
