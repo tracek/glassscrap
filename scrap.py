@@ -16,10 +16,11 @@ def get_crawler(uri):
 
 
 header = [
-    'datetime',
+    'date',
     'jobtitle',
     'currently_employed',
-    'maintext',
+    'fulltime',
+    'min_years_employment',
     'region',
     'region-code',
     'sub-region',
@@ -34,9 +35,9 @@ header = [
     'rating_Culture_and_Values',
     'rating_Compensation_and_Benefits',
     'rating_Career_Opportunities',
-    'Recommendation_1',
-    'Recommendation_2',
-    'Recommendation_3',
+    'ceo_opinion',
+    'recommends',
+    'company_outlook',
     'pros',
     'cons',
     'advice'

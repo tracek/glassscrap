@@ -9,8 +9,7 @@ def parse_review(review: Tag) -> dict:
     :param review: html document (bs4.element.Tag) with user review
     :return: dictionary with user review info
     """
-    d = {'datetime': _get_datetime(review),
-         'years_employment': _get_expyears(review),
+    d = {'date': _get_date(review),
          'pros': _get_pros(review),
          'cons': _get_cons(review),
          'advice': _get_advice(review)
@@ -21,18 +20,20 @@ def parse_review(review: Tag) -> dict:
     recommendations = _get_recommendations(review)
     ratings = _get_ratings(review)
     jobstatus = _get_jobstatus(review)
+    exp = _get_exp(review)
 
     d.update(geoinfo)
     d.update(recommendations)
     d.update(ratings)
     d.update(jobstatus)
+    d.update(exp)
 
     return d
 
 
-def _get_datetime(review: Tag):
-    datetime = review.find("time").attrs['datetime']
-    return datetime
+def _get_date(review: Tag):
+    date = review.find("time").attrs['datetime']
+    return date
 
 
 def _get_ratings(review: Tag) -> dict:
@@ -74,14 +75,27 @@ def _get_location(review: Tag):
 
 
 def _get_recommendations(review: Tag) -> dict:
-    recommendations = {}
+    result = {}
+
+    rec_map = {'Approves of CEO': ['ceo_opinion', 'Approves'],
+               'Disapproves of CEO': ['ceo_opinion', 'Disapproves'],
+               'No opinion of CEO': ['ceo_opinion', 'No opinion'],
+               "Doesn't Recommend": ['recommends', False],
+               'Recommends': ['recommends', True],
+               'Negative Outlook': ['company_outlook', 'Negative'],
+               'Neutral Outlook': ['company_outlook', 'Neutral'],
+               'Positive Outlook': ['company_outlook', 'Positive'] }
+
     t = review.find('div', {'class': 'flex-grid recommends'})
     if t:
         recommendations_html = t.find_all('span', class_='middle')
         if recommendations_html:
-            recommendations = {'Recommendation_{}'.format(idx+1): rec.getText()
-                                for idx, rec in enumerate(recommendations_html)}
-    return recommendations
+            recommendations = [rec.get_text() for rec in recommendations_html]
+            for rec in recommendations:
+                rec_type = rec_map[rec][0]
+                result[rec_type] = rec_map[rec][1]
+
+    return result
 
 
 def _get_exp(review: Tag):
@@ -90,7 +104,7 @@ def _get_exp(review: Tag):
     if main_text:
         fulltime = True if 'full-time' in main_text else False
         years_employment = _get_num_years(main_text)
-        d = {'fulltime': fulltime, 'years_employment': years_employment}
+        d = {'fulltime': fulltime, 'min_years_employment': years_employment}
     else:
         d = {}
 
