@@ -3,6 +3,37 @@ from locator import get_geoinfo
 from bs4.element import Tag
 
 
+def get_header() -> list:
+    header = [
+        'date',
+        'jobtitle',
+        'currently_employed',
+        'fulltime',
+        'min_years_employment',
+        'region',
+        'region-code',
+        'sub-region',
+        'sub-region-code',
+        'country',
+        'country-code',
+        'US_state_code',
+        'city',
+        'location_raw',
+        'rating_Senior_Management',
+        'rating_Work_Life_Balance',
+        'rating_Culture_and_Values',
+        'rating_Compensation_and_Benefits',
+        'rating_Career_Opportunities',
+        'ceo_opinion',
+        'recommends',
+        'company_outlook',
+        'pros',
+        'cons',
+        'advice'
+    ]
+    return header
+
+
 def parse_review(review: Tag) -> dict:
     """
     Extract user review from HTML
