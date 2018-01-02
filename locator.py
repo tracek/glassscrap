@@ -16,11 +16,11 @@ def get_country_mapping() -> dict:
     with open('country-mapping.csv') as fp:
         reader = csv.DictReader(fp)
         country_mapping = {line['name']: {'region': line['region'],
-                                          'region-code': line['region-code'],
-                                          'sub-region': line['sub-region'],
-                                          'sub-region-code': line['sub-region-code'],
+                                          'region_code': line['region-code'],
+                                          'sub_region': line['sub-region'],
+                                          'sub_region_code': line['sub-region-code'],
                                           'country': line['name'],
-                                          'country-code': line['alpha-2']} for line in reader}
+                                          'country_code': line['alpha-2']} for line in reader}
     return country_mapping
 
 

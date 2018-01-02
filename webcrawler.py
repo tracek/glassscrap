@@ -28,16 +28,20 @@ def get_credentials(path):
 class WebCrawler(object):
 
     def __init__(self, path):
-        def get_total_pages(self):
+        def get_total_pages():
             reviews_per_page = 10
             total_rev_present = EC.presence_of_element_located((By.CSS_SELECTOR, '.eiCell.cell.reviews.active'))
             total_rev_element = WebDriverWait(self.driver, 10).until(total_rev_present)
             total_rev_str = total_rev_element.find_element_by_css_selector('.num.h2').text
-            total_rev = int(total_rev_str)
+            try:
+                total_rev = int(total_rev_str)
+            except ValueError:
+                xpath = '//*[@id="MainCol"]/div[1]/div[1]/div[1]/div[1]'
+                total_rev = 3700
             total_pages = total_rev // reviews_per_page - 1
             return total_pages
 
-        def login(self):
+        def login():
             self.driver.get("http://www.glassdoor.com/profile/login_input.htm")
             credentials = get_credentials("account.txt")
             try:
@@ -85,4 +89,5 @@ class WebCrawler(object):
 
 
 if __name__ == '__main__':
-    crawler = WebCrawler(path="https://www.glassdoor.com/Reviews/Sandvik-Reviews-E10375.htm")
+    www = ''
+    crawler = WebCrawler(path=www)

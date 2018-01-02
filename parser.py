@@ -11,11 +11,11 @@ def get_header() -> list:
         'fulltime',
         'min_years_employment',
         'region',
-        'region-code',
-        'sub-region',
-        'sub-region-code',
+        'region_code',
+        'sub_region',
+        'sub_region_code',
         'country',
-        'country-code',
+        'country_code',
         'US_state_code',
         'city',
         'location_raw',
@@ -25,8 +25,11 @@ def get_header() -> list:
         'rating_Compensation_and_Benefits',
         'rating_Career_Opportunities',
         'ceo_opinion',
+        'ceo_opinion_num',
         'recommends',
+        'recommends_num',
         'company_outlook',
+        'company_outlook_num',
         'pros',
         'cons',
         'advice'
@@ -108,14 +111,14 @@ def _get_location(review: Tag):
 def _get_recommendations(review: Tag) -> dict:
     result = {}
 
-    rec_map = {'Approves of CEO': ['ceo_opinion', 'Approves'],
-               'Disapproves of CEO': ['ceo_opinion', 'Disapproves'],
-               'No opinion of CEO': ['ceo_opinion', 'No opinion'],
-               "Doesn't Recommend": ['recommends', False],
-               'Recommends': ['recommends', True],
-               'Negative Outlook': ['company_outlook', 'Negative'],
-               'Neutral Outlook': ['company_outlook', 'Neutral'],
-               'Positive Outlook': ['company_outlook', 'Positive'] }
+    rec_map = {'Approves of CEO': ['ceo_opinion', 'Approves', 1],
+               'Disapproves of CEO': ['ceo_opinion', 'Disapproves', -1],
+               'No opinion of CEO': ['ceo_opinion', 'No opinion', 0],
+               "Doesn't Recommend": ['recommends', False, -1],
+               'Recommends': ['recommends', True, 1],
+               'Negative Outlook': ['company_outlook', 'Negative', -1],
+               'Neutral Outlook': ['company_outlook', 'Neutral', 0],
+               'Positive Outlook': ['company_outlook', 'Positive', 1] }
 
     t = review.find('div', {'class': 'flex-grid recommends'})
     if t:
@@ -125,6 +128,7 @@ def _get_recommendations(review: Tag) -> dict:
             for rec in recommendations:
                 rec_type = rec_map[rec][0]
                 result[rec_type] = rec_map[rec][1]
+                result[rec_type + '_num'] = rec_map[rec][2]
 
     return result
 
