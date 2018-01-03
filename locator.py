@@ -57,7 +57,7 @@ def get_geoinfo(location: str) -> dict:
         if search:
             country = search.group(1)
             result = mapping[country]
-            result['US_state_code'] = None
+            result['US_state_code'] = 'NULL'
             result['city'] = get_non_us_city(location)
         else:
             result = mapping['United States of America']
