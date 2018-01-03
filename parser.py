@@ -148,6 +148,7 @@ def _get_exp(review: Tag) -> dict:
 
 def _get_num_years(text: str) -> int:
     search = re.search(r'\((.*?)\)', text)
+    years = 'NULL'
     if search:
         year_info_text = search.group(1)
         year_info = year_info_text.split(' ')
@@ -157,26 +158,24 @@ def _get_num_years(text: str) -> int:
             try:
                 years = int(year_info[2])
             except ValueError:
-                years = None
-    else:
-        years = None
+                pass
     return years
 
 
 def _get_pros(review: Tag) -> str:
     pros = review.find('p', {'class': ' pros mainText truncateThis wrapToggleStr'})
-    pros = pros.get_text(separator=' | ') if pros else None
+    pros = pros.get_text(separator=' | ') if pros else 'NULL'
     return pros
 
 
 def _get_cons(review: Tag) -> str:
     cons = review.find('p', {'class': ' cons mainText truncateThis wrapToggleStr'})
-    cons = cons.get_text(separator=' | ') if cons else None
+    cons = cons.get_text(separator=' | ') if cons else 'NULL'
     return cons
 
 
 def _get_advice(review: Tag) -> str:
     advice = review.find('p', {'class': ' adviceMgmt mainText truncateThis wrapToggleStr'})
-    advice = advice.get_text(separator=' | ') if advice else None
+    advice = advice.get_text(separator=' | ') if advice else 'NULL'
     return advice
 
