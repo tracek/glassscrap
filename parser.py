@@ -65,7 +65,7 @@ def parse_review(review: Tag) -> dict:
     return d
 
 
-def _get_date(review: Tag):
+def _get_date(review: Tag) -> str:
     date = review.find("time").attrs['datetime']
     return date
 
@@ -102,7 +102,7 @@ def _get_jobstatus(review: Tag) -> dict:
     return d
 
 
-def _get_location(review: Tag):
+def _get_location(review: Tag) -> str:
     location = review.find('span', {'class': 'authorLocation middle'})
     location = location.text if location else None
     return location
@@ -133,7 +133,7 @@ def _get_recommendations(review: Tag) -> dict:
     return result
 
 
-def _get_exp(review: Tag):
+def _get_exp(review: Tag) -> dict:
     main_text = review.find('p', {'class': ' tightBot mainText'})
     main_text = main_text.text.replace(u'\xa0', u' ') if main_text else None
     if main_text:
@@ -146,7 +146,7 @@ def _get_exp(review: Tag):
     return d
 
 
-def _get_num_years(text):
+def _get_num_years(text: str) -> int:
     search = re.search(r'\((.*?)\)', text)
     if search:
         year_info_text = search.group(1)
@@ -163,19 +163,19 @@ def _get_num_years(text):
     return years
 
 
-def _get_pros(review: Tag):
+def _get_pros(review: Tag) -> str:
     pros = review.find('p', {'class': ' pros mainText truncateThis wrapToggleStr'})
     pros = pros.get_text(separator=' | ') if pros else None
     return pros
 
 
-def _get_cons(review: Tag):
+def _get_cons(review: Tag) -> str:
     cons = review.find('p', {'class': ' cons mainText truncateThis wrapToggleStr'})
     cons = cons.get_text(separator=' | ') if cons else None
     return cons
 
 
-def _get_advice(review: Tag):
+def _get_advice(review: Tag) -> str:
     advice = review.find('p', {'class': ' adviceMgmt mainText truncateThis wrapToggleStr'})
     advice = advice.get_text(separator=' | ') if advice else None
     return advice
