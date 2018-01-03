@@ -94,7 +94,7 @@ def _get_jobstatus(review: Tag) -> dict:
     title = title.split(' ')
     current_employee = title[0] == 'Current'
     if title[3] == 'Anonymous':
-        jobtitle = None
+        jobtitle = 'NULL'
     else:
         jobtitle = ' '.join(title[3:])
 
@@ -176,7 +176,7 @@ def _get_cons(review: Tag):
 
 
 def _get_advice(review: Tag):
-    advice = review.find('p', {'class': 'dviceMgmt mainText truncateThis wrapToggleStr truncatedThis pointer'})
+    advice = review.find('p', {'class': ' adviceMgmt mainText truncateThis wrapToggleStr'})
     advice = advice.get_text(separator=' | ') if advice else None
     return advice
 

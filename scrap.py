@@ -16,15 +16,17 @@ def get_crawler(uri):
 
 
 if __name__ == '__main__':
-
+    write_header = False
     uri = "https://www.glassdoor.com/Reviews/Sandvik-Reviews-E10375.htm"
     uri = 'www'
     output_csv = 'sandvik.csv'
     crawler = get_crawler(uri)
 
     with open(output_csv, 'wt', encoding='utf-8') as fp:
-        writer = DictWriter(fp, fieldnames=get_header(), delimiter=',')
-        writer.writeheader()
+        # Replace None with "NULL" so that MySQL interprets is as NULL (otherwise it is parsed as empty string)
+        writer = DictWriter(fp, fieldnames=get_header(), delimiter=',', restval='NULL')
+        if write_header:
+            writer.writeheader()
         for page in tqdm(crawler.get_page(), total=crawler.total_pages):
             soup = BeautifulSoup(page, "lxml")
             reviews = soup.find_all("li", {"class": ["empReview", "padVert"]})
