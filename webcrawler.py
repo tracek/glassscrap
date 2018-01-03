@@ -30,15 +30,11 @@ class WebCrawler(object):
     def __init__(self, path):
         def get_total_pages():
             reviews_per_page = 10
-            total_rev_present = EC.presence_of_element_located((By.CSS_SELECTOR, '.eiCell.cell.reviews.active'))
-            total_rev_element = WebDriverWait(self.driver, 10).until(total_rev_present)
-            total_rev_str = total_rev_element.find_element_by_css_selector('.num.h2').text
-            try:
-                total_rev = int(total_rev_str)
-            except ValueError:
-                xpath = '//*[@id="MainCol"]/div[1]/div[1]/div[1]/div[1]'
-                total_rev = 3700
-            total_pages = total_rev // reviews_per_page - 1
+            xpath = '//*[@id="MainCol"]/div[1]/div[1]/div[1]/div[1]'
+            total_rev_str = self.driver.find_element_by_xpath(xpath).text
+            total_rev_str, _ = total_rev_str.split(' ')
+            total_rev = int(total_rev_str)
+            total_pages = total_rev // reviews_per_page + 1
             return total_pages
 
         def login():
@@ -54,6 +50,7 @@ class WebCrawler(object):
                 pw_field.send_keys(credentials.password)
                 time.sleep(1)
                 login_button.click()
+                time.sleep(4)
             except TimeoutException:
                 print("TimeoutException! Username/password field or login button not found on glassdoor.com")
 
@@ -89,5 +86,5 @@ class WebCrawler(object):
 
 
 if __name__ == '__main__':
-    www = ''
+    www = 'https://www.glassdoor.com/Reviews/Sandvik-Reviews-E10375.htm'
     crawler = WebCrawler(path=www)
