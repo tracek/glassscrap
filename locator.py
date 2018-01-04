@@ -20,7 +20,9 @@ def get_country_mapping() -> dict:
                                           'sub_region': line['sub-region'],
                                           'sub_region_code': line['sub-region-code'],
                                           'country': line['name'],
-                                          'country_code': line['alpha-2']} for line in reader}
+                                          'country_code_2': line['alpha-2'],
+                                          'country_code_3': line['alpha-3']
+                                          } for line in reader}
     return country_mapping
 
 

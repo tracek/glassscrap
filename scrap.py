@@ -18,8 +18,8 @@ def get_crawler(uri):
 if __name__ == '__main__':
     write_header = False
     uri = "https://www.glassdoor.com/Reviews/Sandvik-Reviews-E10375.htm"
-    uri = 'www'
-    output_csv = 'sandvik.csv'
+    uri = 'creditsuisse'
+    output_csv = 'creditsuisse.csv'
     crawler = get_crawler(uri)
 
     with open(output_csv, 'wt', encoding='utf-8', newline='\n') as fp:
