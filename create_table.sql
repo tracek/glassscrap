@@ -4,12 +4,12 @@ USE company;
 
 DROP TABLE IF EXISTS reviews;
 
-CREATE TABLE IF NOT EXISTS reviews
+CREATE TABLE IF NOT EXISTS test
 (
   date DATE,
   jobtitle VARCHAR(255),
-  currently_employed BOOLEAN,
-  fulltime BOOLEAN,
+  currently_employed ENUM('True', 'False'),
+  fulltime ENUM('True', 'False'),
   min_years_employment INT,
   region VARCHAR(255),
   region_code INT,
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS reviews
   rating_Career_Opportunities INT,
   ceo_opinion ENUM('Approves', 'Disapproves', 'No opinion'),
   ceo_opinion_num INT,
-  recommends BOOLEAN,
+  recommends ENUM('True', 'False'),
   recommends_num INT,
   company_outlook ENUM('Positive', 'Neutral', 'Negative'),
   company_outlook_num INT,

@@ -22,9 +22,9 @@ if __name__ == '__main__':
     output_csv = 'sandvik.csv'
     crawler = get_crawler(uri)
 
-    with open(output_csv, 'wt', encoding='utf-8') as fp:
+    with open(output_csv, 'wt', encoding='utf-8', newline='\n') as fp:
         # Replace None with "NULL" so that MySQL interprets is as NULL (otherwise it is parsed as empty string)
-        writer = DictWriter(fp, fieldnames=get_header(), delimiter=',', restval='NULL')
+        writer = DictWriter(fp, fieldnames=get_header(), delimiter=',', restval='NULL', lineterminator='\n')
         if write_header:
             writer.writeheader()
         for page in tqdm(crawler.get_page(), total=crawler.total_pages):
