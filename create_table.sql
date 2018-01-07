@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS reviews;
 
 CREATE TABLE IF NOT EXISTS test
 (
-  date DATE,
+  revdate DATE,
   jobtitle VARCHAR(255),
   currently_employed ENUM('True', 'False'),
   fulltime ENUM('True', 'False'),
