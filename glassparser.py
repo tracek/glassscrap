@@ -20,6 +20,7 @@ def get_header() -> list:
         'US_state_code',
         'city',
         'location_raw',
+        'rating_overall',
         'rating_Senior_Management',
         'rating_Work_Life_Balance',
         'rating_Culture_and_Values',
@@ -79,6 +80,10 @@ def _get_ratings(review: Tag) -> dict:
               'rating_Senior_Management']
     ratings_html = review.find_all('span', {'class': "gdBars gdRatings med "})
     ratings = {theme: int(float(rating.attrs['title'])) for theme, rating in zip(themes, ratings_html)}
+
+    overall_rating_str = review.find('span', {'class': 'value-title'}).get('title')
+    ratings['rating_overall'] = int(float(overall_rating_str))
+
     return ratings
 
 

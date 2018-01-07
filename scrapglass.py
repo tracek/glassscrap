@@ -10,7 +10,7 @@ from webcrawler import WebCrawler
 from glassparser import parse_review, get_header
 
 
-def get_crawler(uri: str, chrome_driver_path, dump_to_local=False):
+def get_crawler(uri: str, chrome_driver_path, dump_to_local):
     if parse.urlparse(uri).scheme in ('http', 'https',):
         scraper = WebCrawler(uri, chrome_driver_path, dump_to_local)
     else:
@@ -28,7 +28,7 @@ if __name__ == '__main__':
     argparser.add_argument('--driver', help='Path to the chrome driver (see installation instruction on github). '
                                             'Defaults to /usr/local/bin/chromedriver', default="/usr/local/bin/chromedriver")
     args = argparser.parse_args()
-    crawler = get_crawler(args.source, args.dump, args.driver)
+    crawler = get_crawler(args.source, args.driver, args.dump)
 
     with open(args.dest, 'wt', encoding='utf-8', newline='\n') as fp:
         # Replace None with "NULL" so that MySQL interprets is as NULL (otherwise it is parsed as empty string)
