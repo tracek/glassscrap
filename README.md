@@ -1,4 +1,6 @@
-# My Little Scrappy
+# Ethical web crawler for Glassdoor
+
+What is "ethical" when it comes to web crawling is subjective and debatable, but the way I understand it is that the crawler simply automates some user actions; it does not produce heavier traffic nor tries to parse the web site from the root level. In this case it simply takes the company we are interested in and extracts relevant fields. Later it enriches the data set with structured location information.
 
 ## Installation
 
