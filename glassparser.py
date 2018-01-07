@@ -6,7 +6,8 @@ from bs4.element import Tag
 def get_header() -> list:
     header = [
         'review_date',
-        'review_title',
+        'title',
+        'helpful_count',
         'jobtitle',
         'currently_employed',
         'fulltime',
@@ -47,7 +48,8 @@ def parse_review(review: Tag) -> dict:
     :return: dictionary with user review info
     """
     d = {'review_date': _get_date(review),
-         'review_title': _get_review_title(review),
+         'title': _get_review_title(review),
+         'helpful_count': _get_helpful_count(review),
          'pros': _get_pros(review),
          'cons': _get_cons(review),
          'advice': _get_advice(review)
@@ -67,6 +69,13 @@ def parse_review(review: Tag) -> dict:
     d.update(exp)
 
     return d
+
+
+def _get_helpful_count(review: Tag) -> int:
+    count_text = review.find('span', {'class': 'count'}).text
+    count_str = re.search(r'\((.*?)\)', count_text).group(1)
+    count = int(count_str)
+    return count
 
 
 def _get_review_title(review: Tag) -> str:
@@ -160,7 +169,7 @@ def _get_exp(review: Tag) -> dict:
 
 
 def _get_num_years(text: str) -> int:
-    search = re.search(r'\((.*?)\)', text)
+    search = re.search(r'\((.*?)\)', text) # search between round brackets
     years = 'NULL'
     if search:
         year_info_text = search.group(1)
