@@ -28,7 +28,7 @@ def get_credentials(path):
 
 class WebCrawler(object):
 
-    def __init__(self, path: str, dump_to_local=False):
+    def __init__(self, path: str, chrome_driver_path, dump_to_local=False):
         def get_total_pages():
             reviews_per_page = 10
             xpath = '//*[@id="MainCol"]/div[1]/div[1]/div[1]/div[1]'
@@ -55,7 +55,7 @@ class WebCrawler(object):
             except TimeoutException:
                 print("TimeoutException! Username/password field or login button not found on glassdoor.com")
 
-        self.driver = webdriver.Chrome("/usr/local/bin/chromedriver")
+        self.driver = webdriver.Chrome(chrome_driver_path)
 
         self.dump_to_local = dump_to_local
         if dump_to_local:
@@ -99,8 +99,3 @@ class WebCrawler(object):
             with open(filename, 'wt', encoding='utf-8') as fp:
                 fp.write(page)
 
-
-
-if __name__ == '__main__':
-    www = 'https://www.glassdoor.com/Reviews/Sandvik-Reviews-E10375.htm'
-    crawler = WebCrawler(path=www)

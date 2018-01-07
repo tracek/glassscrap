@@ -10,9 +10,9 @@ from webcrawler import WebCrawler
 from glassparser import parse_review, get_header
 
 
-def get_crawler(uri: str, dump_to_local=False):
+def get_crawler(uri: str, chrome_driver_path, dump_to_local=False):
     if parse.urlparse(uri).scheme in ('http', 'https',):
-        scraper = WebCrawler(uri, dump_to_local)
+        scraper = WebCrawler(uri, chrome_driver_path, dump_to_local)
     else:
         scraper = LocalCrawler(uri)
     return scraper
@@ -25,8 +25,10 @@ if __name__ == '__main__':
     argparser.add_argument('-s', '--source', help='Path to the reviews (either local or web e.g. '
                                                   'https://www.glassdoor.com/Reviews/Google-Reviews-E9079.htm', required=True)
     argparser.add_argument('-d', '--dest', help='Destination: local path (incl. filename), defaults to review.csv', default='review.csv')
+    argparser.add_argument('--driver', help='Path to the chrome driver (see installation instruction on github). '
+                                            'Defaults to /usr/local/bin/chromedriver', default="/usr/local/bin/chromedriver")
     args = argparser.parse_args()
-    crawler = get_crawler(args.source, args.dump)
+    crawler = get_crawler(args.source, args.dump, args.driver)
 
     with open(args.dest, 'wt', encoding='utf-8', newline='\n') as fp:
         # Replace None with "NULL" so that MySQL interprets is as NULL (otherwise it is parsed as empty string)
