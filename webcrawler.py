@@ -61,7 +61,7 @@ class WebCrawler(object):
             self.driver.get("http://www.glassdoor.com/profile/login_input.htm")
             credentials = get_credentials("account.txt")
             try:
-                user_field = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.NAME, "username")))
+                user_field = WebDriverWait(self.driver, 15).until(EC.presence_of_element_located((By.NAME, "username")))
                 pw_field = self.driver.find_element_by_class_name("signin-password")
                 login_button = self.driver.find_element_by_id("signInBtn")
                 user_field.send_keys(credentials.username)
