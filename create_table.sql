@@ -6,7 +6,8 @@ DROP TABLE IF EXISTS reviews;
 
 CREATE TABLE IF NOT EXISTS test
 (
-  revdate DATE,
+  review_date DATE,
+  review_title VARCHAR(255),
   jobtitle VARCHAR(255),
   currently_employed ENUM('True', 'False'),
   fulltime ENUM('True', 'False'),
@@ -16,11 +17,12 @@ CREATE TABLE IF NOT EXISTS test
   sub_region VARCHAR(255),
   sub_region_code INT,
   country VARCHAR(255),
-  country_code_2 VARCHAR(255),
-  country_code_3 VARCHAR(255),
-  US_state_code VARCHAR(255),
+  country_code_2 VARCHAR(2),
+  country_code_3 VARCHAR(3),
+  US_state_code VARCHAR(5),
   city VARCHAR(255),
   location_raw VARCHAR(255),
+  rating_overall INT,
   rating_Senior_Management INT,
   rating_Work_Life_Balance INT,
   rating_Culture_and_Values INT,

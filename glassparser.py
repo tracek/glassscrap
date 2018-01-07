@@ -5,7 +5,8 @@ from bs4.element import Tag
 
 def get_header() -> list:
     header = [
-        'date',
+        'review_date',
+        'review_title',
         'jobtitle',
         'currently_employed',
         'fulltime',
@@ -45,7 +46,8 @@ def parse_review(review: Tag) -> dict:
     :param review: html document (bs4.element.Tag) with user review
     :return: dictionary with user review info
     """
-    d = {'date': _get_date(review),
+    d = {'review_date': _get_date(review),
+         'review_title': _get_review_title(review),
          'pros': _get_pros(review),
          'cons': _get_cons(review),
          'advice': _get_advice(review)
@@ -65,6 +67,11 @@ def parse_review(review: Tag) -> dict:
     d.update(exp)
 
     return d
+
+
+def _get_review_title(review: Tag) -> str:
+    title = review.find('span', {'class': 'summary'}).text
+    return title
 
 
 def _get_date(review: Tag) -> str:
