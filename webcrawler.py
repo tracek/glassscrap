@@ -34,7 +34,7 @@ class WebCrawler(object):
             xpath = '//*[@id="MainCol"]/div[1]/div[1]/div[1]/div[1]'
             total_rev_str = self.driver.find_element_by_xpath(xpath).text
             total_rev_str, _ = total_rev_str.split(' ')
-            total_rev = int(total_rev_str)
+            total_rev = int(total_rev_str.replace(',','')) # replace optional comma in case over 1k reviews
             total_pages = total_rev // reviews_per_page + 1
             return total_pages
 
