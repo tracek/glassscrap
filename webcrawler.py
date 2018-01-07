@@ -1,3 +1,4 @@
+import os
 import time
 from collections import namedtuple
 from random import randint
@@ -27,7 +28,7 @@ def get_credentials(path):
 
 class WebCrawler(object):
 
-    def __init__(self, path):
+    def __init__(self, path: str, dump_to_local=False):
         def get_total_pages():
             reviews_per_page = 10
             xpath = '//*[@id="MainCol"]/div[1]/div[1]/div[1]/div[1]'
@@ -55,6 +56,13 @@ class WebCrawler(object):
                 print("TimeoutException! Username/password field or login button not found on glassdoor.com")
 
         self.driver = webdriver.Chrome("/usr/local/bin/chromedriver")
+
+        self.dump_to_local = dump_to_local
+        if dump_to_local:
+            dump_directory = path[path.rfind('/') + 1:  path.rfind('-Reviews')] + '_dump'
+            os.makedirs(dump_directory, exist_ok=True)
+            self.dump_to_local = dump_directory
+
         self.pages_visited = 0
         self.path = path
         login()
@@ -62,6 +70,7 @@ class WebCrawler(object):
         self.total_pages = get_total_pages()
 
     def get_page(self):
+        self.dump_page()
         yield self.driver.page_source
         self.pages_visited += 1
 
@@ -74,10 +83,17 @@ class WebCrawler(object):
             some_int = randint(5, 10)
             self.driver.execute_script("window.scrollTo(0, {})".format(100 * some_int))
             time.sleep(some_int)
+            self.dump_page()
             self.pages_visited += 1
             yield self.driver.page_source
 
-    def dump(self):
+    def dump_page(self):
+        if self.dump_to_local:
+            filename = self.path[self.path.rfind('/') + 1:]
+            with open(os.path.join(self.dump_to_local, filename), 'wt', encoding='utf-8') as fp:
+                fp.write(self.driver.page_source)
+
+    def dump_all(self):
         for page in self.get_page():
             filename = self.path[self.path.rfind('/') + 1:]
             with open(filename, 'wt', encoding='utf-8') as fp:
