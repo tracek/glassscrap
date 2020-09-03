@@ -7,7 +7,7 @@ What is "ethical" when it comes to web crawling is subjective and debatable, but
 Set versions:
 
 ```bash
-CHROME_DRIVER_VERSION=`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE'
+CHROME_DRIVER_VERSION=`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE`
 SELENIUM_STANDALONE_VERSION=3.8.0
 SELENIUM_SUBDIR=$(echo "$SELENIUM_STANDALONE_VERSION" | cut -d"." -f-2)
 ```
